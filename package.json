@@ -1,8 +1,8 @@
 {
-  "name": "news-explorer",
+  "name": "news-explorer-api",
   "version": "1.0.0",
   "description": "`/data` — JSON files to temporarily emulate database integration.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
     "dev": "nodemon app.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SoniaNeimark/react-around-api-full.git"
+    "url": "git+https://github.com/SoniaNeimark/news-explorer-api.git"
   },
   "keywords": [],
   "author": "SoniaNeimark",
