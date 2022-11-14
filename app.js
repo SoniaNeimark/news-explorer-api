@@ -7,7 +7,7 @@ const process = require('node:process');
 const { errors } = require('celebrate');
 const cors = require('cors');
 
-const { requestLogger, errorLogger } = require('./middlewares/Logger');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const usersRout = require('./routs/users');
 const articleRout = require('./routs/articles');
 const wrongRout = require('./routs/wrongs');
