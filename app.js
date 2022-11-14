@@ -6,16 +6,24 @@ const process = require('node:process');
 const { errors } = require('celebrate');
 const cors = require('cors');
 
+const { requestLogger, errorLogger } = require('./middlewares/Logger');
 const usersRout = require('./routs/users');
 const articleRout = require('./routs/articles');
 const wrongRout = require('./routs/wrongs');
 const { createUser, login } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
+const {
+  userBodyValidation,
+  userCredentialsBodyValidation,
+  validateRequest,
+} = require('./helpers/requestValidators');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET, DB_URI } = process.env;
 const app = express();
 app.use(helmet());
-mongoose.connect(NODE_ENV === 'production' ? DB_URI : 'mongodb://localhost:27017/newsdb');
+mongoose.connect(
+  NODE_ENV === 'production' ? DB_URI : 'mongodb://localhost:27017/devdb'
+);
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -26,15 +34,17 @@ const { PORT = 3000 } = process.env;
 
 app.use(express.json());
 
+app.use(requestLogger);
+
 app.use(cors());
 
 app.options('*', cors());
 
 app.use(limiter);
 
-app.post('/signin', login);
+app.post('/signin', validateRequest(userCredentialsBodyValidation), login);
 
-app.post('/signup', createUser);
+app.post('/signup', validateRequest(userBodyValidation), createUser);
 
 app.use(auth);
 
@@ -44,12 +54,14 @@ app.use(articleRout);
 
 app.use(wrongRout);
 
+app.use(errorLogger);
+
 app.use(errors());
 
 app.use((err, req, res, next) => {
   res
     .status(err.statusCode ? err.statusCode : 500)
-    .send({ message: `caught ${err.name} error: ${err.message}` });
+    .send({ message: `Caught ${err.name}: ${err.message}` });
 });
 
 app.listen(PORT);

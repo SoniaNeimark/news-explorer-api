@@ -34,6 +34,7 @@ const createUser = (req, res, next) => {
                 const { password, ...itemToReturn } = newItem._doc;
                 if (password) {
                   res.send(itemToReturn);
+                  return;
                 }
                 throw ServerError;
               }
