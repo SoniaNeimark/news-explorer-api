@@ -1,6 +1,6 @@
 const invalidCode = 400;
-const invalidEmailOrPasswordCode = 401;
-const unauthorizedCode = 403;
+const unauthorizedCode = 401;
+const ForbiddenCode = 403;
 const notFoundCode = 404;
 const userExistsCode = 409;
 const serverErrorCode = 500;
@@ -17,59 +17,59 @@ class MyCustomError extends Error {
 const WrongRequestError = new MyCustomError(
   'Incorrect request',
   'WrongRequestError',
-  invalidCode
+  invalidCode,
 );
 const InvalidEmailError = new MyCustomError(
   'Not valid email address',
   'InvalidEmailError',
-  invalidCode
+  invalidCode,
 );
 
 //  401
 const EmailOrPasswordError = new MyCustomError(
   'Incorrect email or password',
   'EmailOrPasswordError',
-  invalidEmailOrPasswordCode
+  unauthorizedCode,
 );
 
-//  403
 const AuthorizationError = new MyCustomError(
   'Authorization required',
   'AuthorizationError',
-  unauthorizedCode
+  unauthorizedCode,
 );
 
+//  403
 const NotOwnerError = new MyCustomError(
   'You can edit only your personal account',
   'NotOwnerError',
-  unauthorizedCode
+  ForbiddenCode,
 );
 
 const NotArticleOwnerError = new MyCustomError(
   'You can remove only articles added by you',
   'NotArticleOwnerError',
-  unauthorizedCode
+  ForbiddenCode,
 );
 
 //  404
 const NotFoundError = new MyCustomError(
   'Requested resource not found',
   'NotFoundError',
-  notFoundCode
+  notFoundCode,
 );
 
 //  409
 const AlreadyExistsError = new MyCustomError(
   'User already exists',
   'AlreadyExistsError',
-  userExistsCode
+  userExistsCode,
 );
 
 //  500
 const ServerError = new MyCustomError(
   'An error occured on the server',
   'ServerError',
-  serverErrorCode
+  serverErrorCode,
 );
 
 module.exports = {

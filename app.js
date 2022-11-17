@@ -4,7 +4,7 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const process = require('node:process');
-const { errors } = require('celebrate');
+const { errors, CelebrateError } = require('celebrate');
 const cors = require('cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -19,11 +19,11 @@ const {
   validateRequest,
 } = require('./helpers/requestValidators');
 
-const { NODE_ENV, JWT_SECRET, DB_URI } = process.env;
+const { NODE_ENV, DB_URI } = process.env;
 const app = express();
 app.use(helmet());
 mongoose.connect(
-  NODE_ENV === 'production' ? DB_URI : 'mongodb://localhost:27017/devdb'
+  NODE_ENV === 'production' ? DB_URI : 'mongodb://localhost:27017/devdb',
 );
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

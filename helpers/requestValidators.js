@@ -27,7 +27,7 @@ const headersValidation = {
 
 //  params
 const paramsObjKeys = {
-  id: id,
+  id,
 };
 
 const paramsValidation = {
@@ -64,9 +64,6 @@ const articleBodyObjKeys = {
   source: string,
   link: url,
   image: url,
-  owner: id,
-  link: url,
-  name: string,
 };
 
 const articleBodyValidation = {

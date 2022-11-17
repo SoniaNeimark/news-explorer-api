@@ -9,6 +9,6 @@ const {
 
 const router = express.Router();
 
-router.get(ownerProfile, validateRequest(headersValidation), getCurrentUser);
+router.get(ownerProfile, getCurrentUser);
 
 module.exports = router;

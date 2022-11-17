@@ -15,14 +15,18 @@ const {
 
 const router = express.Router();
 
-router.get(articlesCollection, validateRequest(headersValidation), getArticles);
+router.get(articlesCollection, getArticles);
 
 router.post(
   articlesCollection,
-  validateRequest({ ...headersValidation, ...articleBodyValidation }),
-  createArticle
+  validateRequest({ ...articleBodyValidation }),
+  createArticle,
 );
 
-router.delete(article, validateRequest({ ...headersValidation, ...paramsValidation }), deleteArticle);
+router.delete(
+  article,
+  validateRequest({ ...paramsValidation }),
+  deleteArticle,
+);
 
 module.exports = router;
