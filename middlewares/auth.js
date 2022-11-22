@@ -1,23 +1,18 @@
-require('dotenv').config();
-
-const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
-const { AuthorizationError } = require('../helpers/errors');
+const { secret } = require('../helpers/config');
+const { AuthorizationError, unAuth } = require('../errors');
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw AuthorizationError;
+    throw new AuthorizationError(unAuth);
   }
 
   const token = authorization.replace('Bearer ', '');
-  const payload = jwt.verify(
-    token,
-    NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-  );
+  const payload = jwt.verify(token, secret);
   if (!payload) {
-    throw AuthorizationError;
+    throw new AuthorizationError(unAuth);
   }
   req.user = payload;
   next();

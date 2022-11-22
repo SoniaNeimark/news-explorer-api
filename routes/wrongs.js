@@ -2,10 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
-const { NotFoundError } = require('../helpers/errors');
+const { NotFoundError, notFound } = require('../errors');
 
 const throwErr = () => {
-  throw NotFoundError;
+  throw new NotFoundError(notFound);
 };
 
 router.get('*', throwErr);

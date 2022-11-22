@@ -1,15 +1,16 @@
-const { celebrate, Joi, CelebrateError, isCelebrateError } = require('celebrate');
-const Article = require('../models/article');
+const { Article } = require('../models/article');
 const {
+  ForbiddenError,
   NotFoundError,
   ServerError,
-  NotArticleOwnerError,
-} = require('../helpers/errors');
-const BadRequestError = require('../helpers/BadRequestError')
+  notOwner,
+  notFound,
+  serverErr,
+} = require('../errors');
 
 const getArticles = (req, res, next) => {
   Article.find({ owner: req.user._id })
-    .orFail(NotFoundError)
+    .orFail(new NotFoundError(notFound))
     .then((articles) => {
       res.send(articles);
     })
@@ -17,36 +18,27 @@ const getArticles = (req, res, next) => {
 };
 
 const createArticle = (req, res, next) => {
-  const item = { ...req.body, owner: req.user._id }
-  //item.owner = req.user._id
+  const item = { ...req.body, owner: req.user._id };
   Article.create(item)
     .then((article) => {
       if (article.owner) {
-        res.send(`${article} '${article.title}' added to collection ${article.owner}`);
+        res.send(article);
         return;
       }
-      throw ServerError;
+      throw new ServerError(serverErr);
     })
-    .catch((err) => {
-      if (isCelebrateError(err)) {
-       next(new BadRequestError("oops"))
-      } else {
-        next(err)
-      }
-    });
-    //res.send(item)
+    .catch(next);
 };
 
 const deleteArticle = (req, res, next) => {
   Article.findById(req.params.id)
-    .select('+owner')
-    .orFail(NotFoundError)
+    .orFail(new NotFoundError(notFound))
     .then((article) => {
       if (`${article.owner}` !== `${req.user._id}`) {
-        throw NotArticleOwnerError;
+        throw new ForbiddenError(notOwner);
       }
       Article.findByIdAndDelete(article._id)
-        .orFail(NotFoundError)
+        .orFail(new NotFoundError(notFound))
         .then((removedItem) => res.send({ message: `${removedItem.title} deleted` }))
         .catch(next);
     })

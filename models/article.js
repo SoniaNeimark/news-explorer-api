@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 const stringValidator = require('validator');
+const { Joi } = require('celebrate');
+
+const validateURL = (value, helpers) => {
+  if (stringValidator.isURL(value)) {
+    return value;
+  }
+  return helpers.error('string.uri');
+};
 
 const articleSchema = new mongoose.Schema({
   keyword: {
@@ -46,8 +54,29 @@ const articleSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
-    //select: false,
   },
 });
 
-module.exports = mongoose.model('article', articleSchema);
+const Article = mongoose.model('article', articleSchema);
+
+const validateArticle = (article) => {
+  const schema = Joi.object({
+    keyword: Joi.string().required(),
+    title: Joi.string().required(),
+    text: Joi.string().required(),
+    date: Joi.string().required(),
+    source: Joi.string().required(),
+    link: Joi.string().required().custom(validateURL),
+    image: Joi.string().required().custom(validateURL),
+  });
+  return schema.validate(article);
+};
+
+const articleParams = (params) => {
+  const schema = Joi.object({
+    id: Joi.string().alphanum().length(24).message('Not valid object id value'),
+  });
+  return schema.validate(params);
+};
+
+module.exports = { Article, validateArticle, articleParams };
