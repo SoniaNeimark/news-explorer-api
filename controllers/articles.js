@@ -39,7 +39,7 @@ const deleteArticle = (req, res, next) => {
       }
       Article.findByIdAndDelete(article._id)
         .orFail(new NotFoundError(notFound))
-        .then((removedItem) => res.send({ message: `${removedItem.title} deleted` }))
+        .then((removedItem) => res.send(removedItem))
         .catch(next);
     })
     .catch(next);
