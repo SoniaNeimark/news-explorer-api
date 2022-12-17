@@ -10,7 +10,6 @@ const {
 
 const getArticles = (req, res, next) => {
   Article.find({ owner: req.user._id })
-    .orFail(new NotFoundError(notFound))
     .then((articles) => {
       res.send(articles);
     })
@@ -21,11 +20,8 @@ const createArticle = (req, res, next) => {
   const item = { ...req.body, owner: req.user._id };
   Article.create(item)
     .then((article) => {
-      if (article.owner) {
-        res.send(article);
-        return;
-      }
-      throw new ServerError(serverErr);
+      res.send(article);
+      return;
     })
     .catch(next);
 };

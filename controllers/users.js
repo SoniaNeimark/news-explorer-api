@@ -10,6 +10,7 @@ const {
   notFound,
   serverErr,
 } = require('../errors');
+const WrongRequestError = require('../errors/WrongRequestError');
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -19,31 +20,30 @@ const getCurrentUser = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  const { name, password, email } = req.body;
+  User.findOne({ email })
     .then((user) => {
       if (user) {
         throw new ConflictError(userExists);
       }
       bcrypt
-        .hash(req.body.password, 10)
+        .hash(password, 10)
         .then((hash) => {
           User.create({
-            email: req.body.email,
+            email,
             password: hash,
-            name: req.body.name,
+            name,
           })
-            .then((newItem) => {
-              if (newItem.password) {
-                const { password, ...itemToReturn } = newItem._doc;
-                if (password) {
-                  res.send(itemToReturn);
-                  return;
-                }
-                throw new ServerError(serverErr);
-              }
-              throw new ServerError(serverErr);
+            .then(() => {
+              res.send({ name, email });
             })
-            .catch(next);
+            .catch((err) => {
+              if (err.name === 'ValidationError') {
+                next(new WrongRequestError('Invalid data'));
+              } else {
+                next(err);
+              }
+            });
         })
         .catch(next);
     })

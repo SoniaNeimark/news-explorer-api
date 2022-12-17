@@ -10,12 +10,20 @@ const auth = (req, res, next) => {
   }
 
   const token = authorization.replace('Bearer ', '');
-  const payload = jwt.verify(token, secret);
-  if (!payload) {
+  let payload;
+  try {
+    payload = jwt.verify(token, secret);
+  } catch (e) {
     throw new AuthorizationError(unAuth);
   }
   req.user = payload;
   next();
+  /*const payload = jwt.verify(token, secret);
+  if (!payload) {
+    throw new AuthorizationError(unAuth);
+  }
+  req.user = payload;
+  next();*/
 };
 
 module.exports = {

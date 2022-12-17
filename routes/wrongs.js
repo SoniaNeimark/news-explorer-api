@@ -8,10 +8,11 @@ const throwErr = () => {
   throw new NotFoundError(notFound);
 };
 
-router.get('*', throwErr);
+/*router.get('*', throwErr);
 router.post('*', throwErr);
 router.patch('*', throwErr);
 router.put('*', throwErr);
-router.delete('*', throwErr);
+router.delete('*', throwErr);*/
+router.all('*', throwErr);
 
 module.exports = router;
