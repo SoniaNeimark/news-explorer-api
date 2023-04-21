@@ -22,9 +22,7 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.use(cors());
-
-app.options('*', cors());
+app.use(cors({ origin: '*' }));
 
 app.use(limiter);
 
