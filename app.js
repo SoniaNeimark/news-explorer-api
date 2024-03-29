@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const cors = require('cors');
+//const cors = require('cors');
 
 const { port, dbUri } = require('./helpers/config');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -22,7 +22,7 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.use(cors({ origin: '*' }));
+//app.use(cors({ origin: '*' }));
 
 app.use(limiter);
 
